@@ -14,7 +14,7 @@ INC += -I$(TOP)
 INC += -I$(BUILD)
 
 #CFLAGS += -std=c99 -Wall -Werror -Wdouble-promotion -Wfloat-conversion -sUSE_SDL=2 
-CFLAGS += -std=c99 -Wall -Werror -Wfloat-conversion -sUSE_SDL=2 
+CFLAGS += -std=c99 -Wall -Werror -Wfloat-conversion 
 CFLAGS += -O3 -DNDEBUG
 CFLAGS += $(INC)
 include $(TOP)/extmod/tulip/tulip.mk
@@ -44,6 +44,7 @@ OBJ += $(addprefix $(BUILD)/, $(EXTMOD_SRC_C:.c=.o))
 
 JSFLAGS += -s ASYNCIFY
 JSFLAGS += -s EXPORTED_FUNCTIONS="['_mp_js_init', '_mp_js_init_repl', '_mp_js_do_str', '_mp_js_process_char', '_mp_hal_get_interrupt_char', '_mp_sched_keyboard_interrupt']" -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" -s --memory-init-file 0 --js-library library.js
+JSFLAGS += -s USE_SDL=2 -s USE_SDL_IMAGE=2 
 
 all: $(BUILD)/micropython.js
 

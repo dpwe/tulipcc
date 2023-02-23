@@ -47,6 +47,16 @@ extern int unix_display_draw();
 extern void unix_display_init();
 
 
+
+// These are all Alles mesh UDP things that we won't port to web
+void *mcast_listen_task(void *vargp) { return NULL; }
+void mcast_send(char * message, uint16_t len) { }
+void create_multicast_ipv4_socket(void) { } 
+int get_first_ip_address(char *host) { return 1; } 
+void midi_out(uint8_t * bytes, uint16_t len) { } 
+char * get_tulip_home_path() { return NULL; }
+
+
 void display_print_strn(void *env, const char *str, size_t len) {
     (void)env;
     if(len) {

@@ -124,6 +124,14 @@
 #define MICROPY_ENABLE_SCHEDULER    (1)
 #define MICROPY_SCHEDULER_DEPTH     (1)
 
+#define MICROPY_VFS                 (1)
+#define MICROPY_VFS_POSIX           (1)
+
+
+#define mp_import_stat mp_vfs_import_stat
+#define mp_builtin_open_obj mp_vfs_open_obj
+#define mp_type_fileio mp_type_vfs_posix_fileio
+#define mp_type_textio mp_type_vfs_posix_textio
 #define MP_SSIZE_MAX (0x7fffffff)
 
 extern const struct _mp_obj_module_t mp_module_utime;
