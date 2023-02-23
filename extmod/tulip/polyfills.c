@@ -22,7 +22,8 @@ void delay_ms(uint32_t ms) {
 #ifdef ESP_PLATFORM
     vTaskDelay(ms / portTICK_PERIOD_MS);
 #else
-    usleep(ms * 1000);
+    SDL_Delay(ms);
+    //usleep(ms * 1000);
 #endif
 }
 

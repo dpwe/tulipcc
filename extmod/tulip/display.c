@@ -1,5 +1,51 @@
 #include "display.h"
 
+uint16_t TFB_COLS, TFB_ROWS, BOUNCE_BUFFER_SIZE_PX;
+
+uint8_t bg_pal_color;
+uint8_t tfb_fg_pal_color;
+uint8_t tfb_bg_pal_color;
+uint8_t ansi_active_bg_color; 
+uint8_t ansi_active_fg_color; 
+int16_t ansi_active_format;
+
+int16_t last_touch_x[3];
+int16_t last_touch_y[3];
+uint8_t touch_held;
+
+uint8_t tfb_y_row; 
+uint8_t tfb_x_col; 
+uint8_t task_screenshot;
+uint8_t task_start;
+uint8_t task_stop;
+int32_t vsync_count;
+uint8_t brightness;
+float reported_fps;
+float reported_gpu_usage;
+
+// RAM for sprites and background FB
+uint8_t *sprite_ram; // in IRAM
+uint8_t * bg; // in SPIRAM
+
+
+uint16_t *sprite_x_px;//[SPRITES]; 
+uint16_t *sprite_y_px;//[SPRITES]; 
+uint16_t *sprite_w_px;//[SPRITES]; 
+uint16_t *sprite_h_px;//[SPRITES]; 
+uint8_t *sprite_vis;//[SPRITES];
+uint32_t *sprite_mem;//[SPRITES];
+
+uint8_t *TFB;//[TFB_ROWS][TFB_COLS];
+uint8_t *TFBfg;//[TFB_ROWS][TFB_COLS];
+uint8_t *TFBbg;//[TFB_ROWS][TFB_COLS];
+uint8_t *TFBf;//[TFB_ROWS][TFB_COLS];
+int16_t *x_offsets;//[V_RES];
+int16_t *y_offsets;//[V_RES];
+int16_t *x_speeds;//[V_RES];
+int16_t *y_speeds;//[V_RES];
+
+uint32_t **bg_lines;//[V_RES];
+
 
 // Defaults for runtime display params
 uint16_t H_RES = DEFAULT_H_RES;

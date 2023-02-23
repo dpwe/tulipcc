@@ -38,6 +38,25 @@
 
 #include "emscripten.h"
 #include "library.h"
+#include "display.h"
+
+
+extern int unix_display_draw(); 
+extern void unix_display_init();
+
+
+void display_print_strn(void *env, const char *str, size_t len) {
+    (void)env;
+    if(len) {
+        display_tfb_str((char*)str, len, 0, tfb_fg_pal_color, tfb_bg_pal_color);
+    }
+}
+
+const mp_print_t mp_stderr_print = {NULL, display_print_strn};
+const mp_print_t mp_stdout_print = {NULL, display_print_strn};
+const mp_print_t mp_sys_stdout_print = {NULL, display_print_strn};
+const mp_print_t mp_display_print = {NULL, display_print_strn};
+
 
 #if MICROPY_ENABLE_COMPILER
 int do_str(const char *src, mp_parse_input_kind_t input_kind) {
@@ -94,6 +113,10 @@ void mp_js_init(int heap_size) {
 }
 
 void mp_js_init_repl() {
+    
+    // Display has to run on main thread on macos
+    unix_display_init();
+
     pyexec_event_repl_init();
 }
 

@@ -6,6 +6,8 @@
 #include "amy.h"
 #include "clipping_lookup_table.h"
 
+void (*amy_parse_callback)(char,char*);
+
 
 #ifdef ESP_PLATFORM
 // Defined in amy-example-esp32

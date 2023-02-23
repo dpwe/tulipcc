@@ -28,9 +28,9 @@ struct ui_element {
     uint8_t type;
 };
 
-struct ui_element ** elements;
+extern struct ui_element ** elements;
 
-int8_t ui_id_held;
+extern int8_t ui_id_held;
 
 
 void tulip_ui_isr(uint8_t ui_id);

@@ -1,5 +1,8 @@
 #include "amy.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265359f
+#endif
 
 // Filters tend to get weird under this ratio -- this corresponds to 4.4Hz 
 #define LOWEST_RATIO 0.0001

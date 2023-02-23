@@ -13,9 +13,11 @@ INC += -I.
 INC += -I$(TOP)
 INC += -I$(BUILD)
 
-CFLAGS += -std=c99 -Wall -Werror -Wdouble-promotion -Wfloat-conversion -sUSE_SDL=2 
+#CFLAGS += -std=c99 -Wall -Werror -Wdouble-promotion -Wfloat-conversion -sUSE_SDL=2 
+CFLAGS += -std=c99 -Wall -Werror -Wfloat-conversion -sUSE_SDL=2 
 CFLAGS += -O3 -DNDEBUG
 CFLAGS += $(INC)
+include $(TOP)/extmod/tulip/tulip.mk
 
 SRC_SHARED = $(addprefix shared/,\
 	runtime/interrupt_char.c \
@@ -30,14 +32,15 @@ SRC_C = \
 	modutime.c \
 	unix_display.c \
 
-include $(TOP)/extmod/tulip/tulip.mk
 
 
-SRC_QSTR += $(SRC_C)
 
+#SRC_QSTR += $(SRC_C)
+SRC_QSTR += $(SRC_C) $(SRC_CXX) $(SHARED_SRC_C) $(EXTMOD_SRC_C) 
 OBJ += $(PY_O)
 OBJ += $(addprefix $(BUILD)/, $(SRC_SHARED:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
+OBJ += $(addprefix $(BUILD)/, $(EXTMOD_SRC_C:.c=.o))
 
 JSFLAGS += -s ASYNCIFY
 JSFLAGS += -s EXPORTED_FUNCTIONS="['_mp_js_init', '_mp_js_init_repl', '_mp_js_do_str', '_mp_js_process_char', '_mp_hal_get_interrupt_char', '_mp_sched_keyboard_interrupt']" -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" -s --memory-init-file 0 --js-library library.js

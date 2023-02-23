@@ -2,6 +2,9 @@
 // user interface components
 #include "ui.h"
 
+struct ui_element ** elements;
+int8_t ui_id_held;
+
 
 // Now, how do i go and change this? I want to higlight it when it's in focus 
 // i could save the metadata of the button (really, just str, and radius, and colors)... and redraw... 
