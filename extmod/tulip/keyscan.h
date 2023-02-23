@@ -19,8 +19,8 @@
 #include "py/runtime.h"
 #include "py/mphal.h"
 
-uint8_t keyboard_send_keys_to_micropython;
-uint8_t last_scan[8];
+extern uint8_t keyboard_send_keys_to_micropython;
+extern uint8_t last_scan[8];
 
 uint16_t scan_ascii(uint8_t code, uint32_t modifier);
 void send_key_to_micropython(uint16_t c);

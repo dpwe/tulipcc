@@ -40,6 +40,8 @@
 #include "library.h"
 #include "display.h"
 
+uint8_t ipv4_quartet = 0;
+
 
 extern int unix_display_draw(); 
 extern void unix_display_init();

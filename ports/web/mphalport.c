@@ -27,9 +27,45 @@
 #include "library.h"
 #include "mphalport.h"
 
-void mp_hal_stdout_tx_strn(const char *str, size_t len) {
-    mp_js_write(str, len);
+
+STATIC uint8_t stdin_ringbuf_array[260];
+ringbuf_t stdin_ringbuf = {stdin_ringbuf_array, sizeof(stdin_ringbuf_array), 0, 0};
+
+
+int mp_hal_stdin_rx_chr(void) {
+    for (;;) {
+        int c = ringbuf_get(&stdin_ringbuf);
+        if (c != -1) {
+           return c;
+        }
+        MICROPY_EVENT_POLL_HOOK
+    }
 }
+
+
+
+void mp_hal_stdout_tx_strn(const char *str, size_t len) {
+    //MP_HAL_RETRY_SYSCALL(ret, write(STDOUT_FILENO, str, len), {});
+    //mp_uos_dupterm_tx_strn(str, len);
+
+    mp_js_write(str, len);
+    if(len) {
+        display_tfb_str((char*)str, len, 0, tfb_fg_pal_color, tfb_bg_pal_color);
+    }
+
+}
+
+
+/*
+// cooked is same as uncooked because the terminal does some postprocessing
+void mp_hal_stdout_tx_strn_cooked(const char *str, size_t len) {
+    mp_hal_stdout_tx_strn(str, len);
+}
+
+void mp_hal_stdout_tx_str(const char *str) {
+    mp_hal_stdout_tx_strn(str, strlen(str));
+}
+*/
 
 void mp_hal_delay_ms(mp_uint_t ms) {
     uint32_t start = mp_hal_ticks_ms();

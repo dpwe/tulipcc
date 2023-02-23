@@ -26,8 +26,9 @@
 
 #include "py/obj.h"
 #include "shared/runtime/interrupt_char.h"
-
-#define mp_hal_stdin_rx_chr() (0)
+#include "py/ringbuf.h"
+#include "display.h"
+//#define mp_hal_stdin_rx_chr() (0)
 void mp_hal_stdout_tx_strn(const char *str, size_t len);
 
 void mp_hal_delay_ms(mp_uint_t ms);

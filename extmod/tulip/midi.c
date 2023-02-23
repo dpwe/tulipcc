@@ -1,6 +1,8 @@
 // midi.c
 #include "midi.h"
 
+uint8_t last_midi[MAX_MIDI_BYTES_PER_MESSAGE];
+uint8_t last_midi_len;
 
 void callback_midi_message_received(uint8_t *data, size_t len) {
     //fprintf(stderr,"got midi message len %d status %d -- ", (uint32_t)len, midi_status);
