@@ -830,7 +830,7 @@ IRAM_ATTR static void lcd_default_isr_handler(void *args)
             // wants to output. To compensate for that, we reset the DMA in the VBlank because we 
             // know the LCD will be requesting pixel (0,0) next.
             // ToDo: Only reset DMA when this interrupt is not late!
-            lcd_rgb_panel_restart_transmission(rgb_panel);
+            //lcd_rgb_panel_restart_transmission(rgb_panel);
         }
     }
 

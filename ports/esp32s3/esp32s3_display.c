@@ -155,7 +155,7 @@ void run_esp32s3_display(void) {
     panel_config.timings.vsync_back_porch = VSYNC_BACK_PORCH;
     panel_config.timings.vsync_front_porch = VSYNC_FRONT_PORCH;
     panel_config.timings.vsync_pulse_width = VSYNC_PULSE_WIDTH;
-    panel_config.flags.relax_on_idle = 0;
+    panel_config.flags.relax_on_idle = 1;
     panel_config.flags.fb_in_psram = 0;
     panel_config.on_frame_trans_done = display_frame_done;
     panel_config.on_bounce_empty = display_bounce_empty;
