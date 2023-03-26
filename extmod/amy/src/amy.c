@@ -28,16 +28,17 @@ struct mod_event * msynth;
 
 // Two float mixing blocks, one per core of rendering
 float ** fbl;
+float **delay_mod_bufs;
 float per_osc_fb[AMY_CORES][BLOCK_SIZE];
 
 // Final output delay lines.
 #define DELAY_LINE_LEN 512  // 11 ms @ 44 kHz
 delay_line_t *delay_lines[AMY_CORES][NCHANS];
-float *delay_line_mod = NULL;
+//float *delay_line_mod = NULL;
 
 // Faking it
-float *delay_mod_buf;
-float delay_mod_phase = 0;
+//float *delay_mod_buf;
+float delay_mod_phase[2] = {0,0};
 float render_lut(float * buf, float step, float skip, float incoming_amp, float ending_amp, const float* lut, int32_t lut_size);
 //extern const float* find_sine_lutable();
 extern const float* find_triangle_lutable();
@@ -358,9 +359,11 @@ int8_t oscs_init() {
         events[i].param = NO_PARAM;
     }
     fbl = (float**) malloc_caps(sizeof(float*) * AMY_CORES, MALLOC_CAP_INTERNAL); // one per core, just core 0 used off esp32
+    delay_mod_bufs = (float**) malloc_caps(sizeof(float*) * AMY_CORES, MALLOC_CAP_INTERNAL);
     // Clear out both as local mode won't use fbl[1] 
     for(uint16_t core=0;core<AMY_CORES;++core) {
         fbl[core]= (float*)malloc_caps(sizeof(float) * BLOCK_SIZE * NCHANS, MALLOC_CAP_INTERNAL);
+        delay_mod_bufs[core] = (float *)malloc_caps(sizeof(float) * BLOCK_SIZE, MALLOC_CAP_INTERNAL);
         for(uint16_t c=0;c<NCHANS;++c) {
             for(uint16_t i=0;i<BLOCK_SIZE;i++) { 
                 fbl[core][BLOCK_SIZE*c + i] = 0; 
@@ -368,7 +371,7 @@ int8_t oscs_init() {
             delay_lines[core][c] = new_delay_line(DELAY_LINE_LEN, DELAY_LINE_LEN / 2);
         }
     }
-    delay_mod_buf = (float *)malloc_caps(sizeof(float) * BLOCK_SIZE, MALLOC_CAP_INTERNAL);
+
     
     total_samples = 0;
     computed_delta = 0;
@@ -627,15 +630,15 @@ void render_task(uint8_t start, uint8_t end, uint8_t core) {
         }
     }
     // apply variable delay line if set
-    if(delay_lines[0][0] != NULL) {
+    if(delay_lines[core][0] != NULL) {
         // Update the chorus modulator.
-        for(int i=0; i < BLOCK_SIZE; ++i) delay_mod_buf[i] = 0;
-        delay_mod_phase = render_lut(delay_mod_buf, delay_mod_phase, chorus.frequency * 256.f/SAMPLE_RATE, 1.0, 1.0,
+        for(int i=0; i < BLOCK_SIZE; ++i) delay_mod_bufs[core][i] = 0;
+        delay_mod_phase[core] = render_lut(delay_mod_bufs[core], delay_mod_phase[core], chorus.frequency * 256.f/SAMPLE_RATE, 1.0f, 1.0f,
                                      find_triangle_lutable(), 512);
         // Apply time-varying delays to both chans.
         float scale = 1.0f;
         for (int16_t c=0; c < NCHANS; ++c) {
-            apply_variable_delay(fbl[core] + c * BLOCK_SIZE, delay_lines[core][c], delay_mod_buf,
+            apply_variable_delay(fbl[core] + c * BLOCK_SIZE, delay_lines[core][c], delay_mod_bufs[core],
                                  scale * chorus.depth, chorus.level, chorus.feedback);
             // Flip delay direction for alternating channels.
             scale = -scale;
